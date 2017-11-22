@@ -8,3 +8,4 @@ module IF_Stage_Registers
 		output reg [31:0] PC,
 		output reg [31:0] Instruction
 	);
+endmodule
