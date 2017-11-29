@@ -309,8 +309,9 @@ wire [31:0] pc;
 wire [32:0] instruction;
 
 
-IF_Stage if_Stage(.rst(SW[0]),.clk(CLK_50),.Br_taken(1'b0),.Br_offset(32'hFFFFFFFF),.PC(pc),.Instruction(instruction));
+//IF_Stage if_Stage(.rst(SW[0]),.clk(CLK_50),.Br_taken(1'b0),.Br_offset(32'hFFFFFFFF),.PC(pc),.Instruction(instruction));
+IF_Stage if_Stage(.rst(SW[0]),.clk(KEY[0]),.Br_taken(1'b0),.Br_offset(32'hFFFFFFFF),.PC(pc),.Instruction(instruction));
 
-To_7segments t7( .data(instruction), .h0(HEX0), .h1(HEX1), .h2(HEX2), .h3(HEX3), .h4(HEX4), .h5(HEX5), .h6(HEX6), .h7(HEX7));
+To_7segments t7( .data(pc), .h0(HEX0), .h1(HEX1), .h2(HEX2), .h3(HEX3), .h4(HEX4), .h5(HEX5), .h6(HEX6), .h7(HEX7));
 
 endmodule
