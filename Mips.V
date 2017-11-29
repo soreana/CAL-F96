@@ -5,8 +5,8 @@
 // Permission:
 //
 //   Terasic grants permission to use and modify this code for use
-//   in synthesis for all Terasic Development Boards and Altera Development 
-//   Kits made by Terasic.  Other use of this code, including the selling 
+//   in synthesis for all Terasic Development Boards and Altera Development
+//   Kits made by Terasic.  Other use of this code, including the selling
 //   ,duplication, or modification of any portion is strictly prohibited.
 //
 // Disclaimer:
@@ -15,11 +15,11 @@
 //   which illustrates how these types of functions can be implemented.
 //   It is the user's responsibility to verify their design for
 //   consistency and functionality through the use of formal
-//   verification methods.  Terasic provides no warranty regarding the use 
+//   verification methods.  Terasic provides no warranty regarding the use
 //   or functionality of this code.
 //
 // ============================================================================
-//           
+//
 //  Terasic Technologies Inc
 //  9F., No.176, Sec.2, Gongdao 5th Rd, East Dist, Hsinchu City, 30070. Taiwan
 //
@@ -39,7 +39,7 @@
 //   Ver  :| Author            :| Mod. Date :| Changes Made:
 //   V1.0 :| Johnny Chen       :| 05/08/19  :|      Initial Revision
 //   V1.1 :| Johnny Chen       :| 05/11/16  :|      Added FLASH Address FL_ADDR[21:20]
-//   V1.2 :| Johnny Chen       :| 05/11/16  :|		Fixed ISP1362 INT/DREQ Pin Direction.   
+//   V1.2 :| Johnny Chen       :| 05/11/16  :|		Fixed ISP1362 INT/DREQ Pin Direction.
 //   V1.3 :| Johnny Chen       :| 06/11/16  :|		Added the Dedicated TV Decoder Line-Locked-Clock Input
 //													            for DE2 v2.X PCB.
 //   V1.5 :| Eko    Yan        :| 12/01/30  :|      Update to version 11.1 sp1.
@@ -47,7 +47,7 @@
 
 module Mips
 	(
-		////////////////////	Clock Input	 	////////////////////	 
+		////////////////////	Clock Input	 	////////////////////
 		CLOCK_27,						//	27 MHz
 		CLOCK_50,						//	50 MHz
 		EXT_CLOCK,						//	External Clock
@@ -76,7 +76,7 @@ module Mips
 		/////////////////////	SDRAM Interface		////////////////
 		DRAM_DQ,						//	SDRAM Data bus 16 Bits
 		DRAM_ADDR,						//	SDRAM Address bus 12 Bits
-		DRAM_LDQM,						//	SDRAM Low-byte Data Mask 
+		DRAM_LDQM,						//	SDRAM Low-byte Data Mask
 		DRAM_UDQM,						//	SDRAM High-byte Data Mask
 		DRAM_WE_N,						//	SDRAM Write Enable
 		DRAM_CAS_N,						//	SDRAM Column Address Strobe
@@ -96,8 +96,8 @@ module Mips
 		////////////////////	SRAM Interface		////////////////
 		SRAM_DQ,						//	SRAM Data bus 16 Bits
 		SRAM_ADDR,						//	SRAM Address bus 18 Bits
-		SRAM_UB_N,						//	SRAM High-byte Data Mask 
-		SRAM_LB_N,						//	SRAM Low-byte Data Mask 
+		SRAM_UB_N,						//	SRAM High-byte Data Mask
+		SRAM_LB_N,						//	SRAM Low-byte Data Mask
 		SRAM_WE_N,						//	SRAM Write Enable
 		SRAM_CE_N,						//	SRAM Chip Enable
 		SRAM_OE_N,						//	SRAM Output Enable
@@ -125,7 +125,7 @@ module Mips
 		LCD_DATA,						//	LCD Data bus 8 bits
 		////////////////////	SD_Card Interface	////////////////
 		//SD_DAT,							//	SD Card Data
-		//SD_WP_N,						   //	SD Write protect 
+		//SD_WP_N,						   //	SD Write protect
 		//SD_CMD,							//	SD Card Command Signal
 		//SD_CLK,							//	SD Card Clock
 		////////////////////	USB JTAG link	////////////////////
@@ -204,7 +204,7 @@ output  [17:0]	LEDR;					//	LED Red[17:0]
 ///////////////////////		SDRAM Interface	////////////////////////
 inout	  [15:0]	DRAM_DQ;				//	SDRAM Data bus 16 Bits
 output  [11:0]	DRAM_ADDR;				//	SDRAM Address bus 12 Bits
-output			DRAM_LDQM;				//	SDRAM Low-byte Data Mask 
+output			DRAM_LDQM;				//	SDRAM Low-byte Data Mask
 output			DRAM_UDQM;				//	SDRAM High-byte Data Mask
 output			DRAM_WE_N;				//	SDRAM Write Enable
 output			DRAM_CAS_N;				//	SDRAM Column Address Strobe
@@ -224,8 +224,8 @@ output			FL_CE_N;				//	FLASH Chip Enable
 ////////////////////////	SRAM Interface	////////////////////////
 inout	 [15:0]	SRAM_DQ;				//	SRAM Data bus 16 Bits
 output [17:0]	SRAM_ADDR;				//	SRAM Address bus 18 Bits
-output			SRAM_UB_N;				//	SRAM High-byte Data Mask 
-output			SRAM_LB_N;				//	SRAM Low-byte Data Mask 
+output			SRAM_UB_N;				//	SRAM High-byte Data Mask
+output			SRAM_LB_N;				//	SRAM Low-byte Data Mask
 output			SRAM_WE_N;				//	SRAM Write Enable
 output			SRAM_CE_N;				//	SRAM Chip Enable
 output			SRAM_OE_N;				//	SRAM Output Enable
@@ -305,6 +305,12 @@ inout	[35:0]	GPIO_1;					//	GPIO Connection 1
 
 //IF_Stage if_(.rst(SW[0]),.clk(CLK_50),.Br_taken(1'b0),.Br_offset(32'hFFFFFFFF),.PC(32'hFFFFFFFF),.Instruction(32'hFFFFFFFF)));
 
+wire [31:0] pc;
+wire [32:0] instruction;
 
+
+IF_Stage if_Stage(.rst(SW[0]),.clk(CLK_50),.Br_taken(1'b0),.Br_offset(32'hFFFFFFFF),.PC(pc),.Instruction(instruction));
+
+To_7segments t7( .data(instruction), .h0(HEX0), .h1(HEX1), .h2(HEX2), .h3(HEX3), .h4(HEX4), .h5(HEX5), .h6(HEX6), .h7(HEX7));
 
 endmodule

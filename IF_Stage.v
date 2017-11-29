@@ -7,5 +7,7 @@ module IF_Stage
 		output [31:0] PC,
 		output [31:0] Instruction
 	);
-assign PC = (Br_taken) ? 32'd14 : 32'd5;
+
+	//assign Instruction = 32'b01110110010101000011001000010000; // check 7,6,5,4,3,2,1,0
+	assign Instruction = 32'b11111110110111001011101010011000; // check f,e,d,c,b,a,9,8
 endmodule
