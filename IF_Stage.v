@@ -12,15 +12,15 @@ module IF_Stage
 	//assign Instruction = 32'b11111110110111001011101010011000; // check f,e,d,c,b,a,9,8
 	Instruction_Memory im( .address(PC), .instruction(Instruction));
 
-  always @ (posedge clk or posedge rst)
-  if (rst) begin
+  always @ (posedge clk)
+	if (rst) begin
     	PC <= 32'd0;
     end
-//	else if (Br_taken) begin
+	 //	else if (Br_taken) begin
   //  	PC <= Br_offset;
-  //end 
+  //end
   else begin
-    	PC <= PC + 32'd1;
+    	PC <= (Br_taken == 1'b1) ? (PC + Br_offset) : PC + 32'd1;
   end
 
 endmodule
