@@ -1,10 +1,10 @@
 module IF_Stage
 	(
-		input clk,
 		input rst,
 		input Br_taken,
+		input [31:0] PC,
 		input [31:0] Br_offset,
-		output reg [31:0] PC,
+		output [31:0] new_PC,
 		output [31:0] Instruction
 	);
 
@@ -12,8 +12,13 @@ module IF_Stage
 	//assign Instruction = 32'b11111110110111001011101010011000; // check f,e,d,c,b,a,9,8
 	Instruction_Memory im( .address(PC), .instruction(Instruction));
 
+	assign new_PC = (rst) ? 32'd0 :
+									(Br_taken == 1'b1) ? (PC + Br_offset)
+									: PC + 32'd1;
+
+	/*
   always @ (posedge clk)
-	if (rst) begin
+		if (rst) begin
     	PC <= 32'd0;
     end
 	 //	else if (Br_taken) begin
@@ -22,5 +27,6 @@ module IF_Stage
   else begin
     	PC <= (Br_taken == 1'b1) ? (PC + Br_offset) : PC + 32'd1;
   end
+	*/
 
 endmodule

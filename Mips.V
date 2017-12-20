@@ -306,14 +306,20 @@ inout	[35:0]	GPIO_1;					//	GPIO Connection 1
 //IF_Stage if_(.rst(SW[0]),.clk(CLK_50),.Br_taken(1'b0),.Br_offset(32'hFFFFFFFF),.PC(32'hFFFFFFFF),.Instruction(32'hFFFFFFFF)));
 
 wire [31:0] pc;
+wire [31:0] new_pc;
 wire [31:0] instruction;
+wire [31:0] pc_reg_wire;
+wire [31:0] instruction_reg_wire;
 
+assign flush =  1'b0;
 
 //IF_Stage if_Stage(.rst(SW[0]),.clk(CLK_50),.Br_taken(1'b0),.Br_offset(32'hFFFFFFFF),.PC(pc),.Instruction(instruction));
-IF_Stage if_Stage(.rst(SW[0]),.clk(KEY[1]),.Br_taken(SW[1]),.Br_offset(32'h000000FF),.PC(pc),.Instruction(instruction));
+IF_Stage if_stage(.rst(SW[0]), .Br_taken(SW[1]), .Br_offset(32'h000000FF), .PC(pc_reg_wire), .Instruction(instruction), .new_PC(new_pc));
+IF_Stage_Registers if_stage_reg( .rst(SW[0]), .clk(KEY[1]), .flush(SW[2]) , .PC_in(new_pc), .Instruction_in(instruction), .PC(pc_reg_wire), .Instruction(instruction_reg_wire));
+
 assign LEDG[0] = KEY[1];
 assign LEDR[1] = SW[1];
 
-To_7segments t7( .data(pc), .h0(HEX0), .h1(HEX1), .h2(HEX2), .h3(HEX3), .h4(HEX4), .h5(HEX5), .h6(HEX6), .h7(HEX7));
+To_7segments t7( .data(instruction_reg_wire), .h0(HEX0), .h1(HEX1), .h2(HEX2), .h3(HEX3), .h4(HEX4), .h5(HEX5), .h6(HEX6), .h7(HEX7));
 
 endmodule

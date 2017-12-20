@@ -11,11 +11,11 @@ module Mem_stage_reg
     input [31:0] Mem_read_value_in,
     input [4:0] Dest_in,
 
-    
+
 		output reg WB_EN,
     // MEM signals
 		output reg MEM_R_EN,
-    // memory Address 
+    // memory Address
     input [31:0] ALU_result,
 
     input [31:0] Mem_read_value,
