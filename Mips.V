@@ -310,6 +310,10 @@ wire [31:0] new_pc;
 wire [31:0] instruction;
 wire [31:0] pc_reg_wire;
 wire [31:0] instruction_reg_wire;
+wire [32:0] reg1_out;
+wire [32:0] reg2_out;
+reg [4:0] address;
+
 
 assign flush =  1'b0;
 
@@ -317,9 +321,22 @@ assign flush =  1'b0;
 IF_Stage if_stage(.rst(SW[0]), .Br_taken(SW[1]), .Br_offset(32'h000000FF), .PC(pc_reg_wire), .Instruction(instruction), .new_PC(new_pc));
 IF_Stage_Registers if_stage_reg( .rst(SW[0]), .clk(KEY[1]), .flush(SW[2]) , .PC_in(new_pc), .Instruction_in(instruction), .PC(pc_reg_wire), .Instruction(instruction_reg_wire));
 
-assign LEDG[0] = KEY[1];
-assign LEDR[1] = SW[1];
+Register_File reg_file(.rst(SW[0]), .clk(KEY[1]), .src1_address(address), .src2_address(5'd0) , .write_enable(SW[3]),
+ .address(5'd2), .data(32'd121), .reg1(reg1_out), .reg2(reg2_out) );
 
-To_7segments t7( .data(instruction_reg_wire), .h0(HEX0), .h1(HEX1), .h2(HEX2), .h3(HEX3), .h4(HEX4), .h5(HEX5), .h6(HEX6), .h7(HEX7));
+always @ (posedge KEY[1]) begin
+	address <= address + 5'd1;
+	if(address == 5'd7)
+		address <= 5'd0;
+end
+
+assign LEDG[0] = KEY[1];
+assign LEDR[0] = SW[0];
+assign LEDR[1] = SW[1];
+assign LEDR[2] = SW[2];
+assign LEDR[3] = SW[3];
+assign LEDR[4] = SW[4];
+
+To_7segments t7( .data(reg1_out), .h0(HEX0), .h1(HEX1), .h2(HEX2), .h3(HEX3), .h4(HEX4), .h5(HEX5), .h6(HEX6), .h7(HEX7));
 
 endmodule

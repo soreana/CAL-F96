@@ -1,4 +1,4 @@
-module ID_Stage 
+module ID_Stage
 	(
 		input clk,
 		input rst,
@@ -28,4 +28,3 @@ module ID_Stage
 	);
 
 endmodule
-	
