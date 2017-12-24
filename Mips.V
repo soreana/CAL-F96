@@ -310,8 +310,8 @@ wire [31:0] new_pc;
 wire [31:0] instruction;
 wire [31:0] pc_reg_wire;
 wire [31:0] instruction_reg_wire;
-wire [32:0] reg1_out;
-wire [32:0] reg2_out;
+wire [31:0] reg1_out;
+wire [31:0] reg2_out;
 reg [4:0] address;
 
 
@@ -321,8 +321,8 @@ assign flush =  1'b0;
 IF_Stage if_stage(.rst(SW[0]), .Br_taken(SW[1]), .Br_offset(32'h000000FF), .PC(pc_reg_wire), .Instruction(instruction), .new_PC(new_pc));
 IF_Stage_Registers if_stage_reg( .rst(SW[0]), .clk(KEY[1]), .flush(SW[2]) , .PC_in(new_pc), .Instruction_in(instruction), .PC(pc_reg_wire), .Instruction(instruction_reg_wire));
 
-Register_File reg_file(.rst(SW[0]), .clk(KEY[1]), .src1_address(address), .src2_address(5'd0) , .write_enable(SW[3]),
- .address(5'd2), .data(32'd121), .reg1(reg1_out), .reg2(reg2_out) );
+Register_File reg_file(.rst(SW[0]), .clk(KEY[1]), .src1_address(address), .src2_address(5'd0), .write_enable(SW[3]),
+.address(5'd2), .data(32'd121), .reg1(reg1_out), .reg2(reg2_out) );
 
 always @ (posedge KEY[1]) begin
 	address <= address + 5'd1;
