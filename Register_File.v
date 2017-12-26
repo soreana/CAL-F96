@@ -16,9 +16,9 @@ integer i;
 assign reg1 = regfile[src1_address];
 assign reg2 = regfile[src2_address];
 
-always @ (negedge clk) begin
+always @ (negedge clk or posedge rst) begin
   if(rst) begin
-    for(i = 0; i<8; i=i+1) begin
+    for(i = 0; i<32; i=i+1) begin
       regfile[i]<= i;
     end
   end else begin
