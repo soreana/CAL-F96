@@ -1,4 +1,4 @@
-module Mem_stage_reg
+module Mem_Stage_registers
   (
     input clk,
     input rst,
@@ -19,5 +19,6 @@ module Mem_stage_reg
     input [31:0] ALU_result,
 
     input [31:0] Mem_read_value,
-		output reg [4:0] Dest,
+		output reg [4:0] Dest
     );
+endmodule

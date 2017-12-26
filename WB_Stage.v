@@ -12,5 +12,7 @@ module WB_stage
 
 		output WB_EN,
     output [31:0] write_value,
-		output [4:0] Dest,
+		output [4:0] Dest
   );
+
+endmodule

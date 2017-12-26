@@ -302,13 +302,13 @@ input          TD_CLK27;            //	TV Decoder 27MHz CLK
 inout	[35:0]	GPIO_0;					//	GPIO Connection 0
 inout	[35:0]	GPIO_1;					//	GPIO Connection 1
 
-
 //IF_Stage if_(.rst(SW[0]),.clk(CLK_50),.Br_taken(1'b0),.Br_offset(32'hFFFFFFFF),.PC(32'hFFFFFFFF),.Instruction(32'hFFFFFFFF)));
 
-wire [31:0] pc;
 wire [31:0] new_pc;
 wire [31:0] instruction;
-wire [31:0] pc_reg_wire;
+wire [31:0] pc_to_ID_wire;
+wire [31:0] pc_to_EXE_wire;
+wire [31:0] pc_to_MEM_wire;
 wire [31:0] instruction_reg_wire;
 wire [31:0] reg1_out;
 wire [31:0] reg2_out;
@@ -318,17 +318,27 @@ reg [4:0] address;
 assign flush =  1'b0;
 
 //IF_Stage if_Stage(.rst(SW[0]),.clk(CLK_50),.Br_taken(1'b0),.Br_offset(32'hFFFFFFFF),.PC(pc),.Instruction(instruction));
-IF_Stage if_stage(.rst(SW[0]), .Br_taken(SW[1]), .Br_offset(32'h000000FF), .PC(pc_reg_wire), .Instruction(instruction), .new_PC(new_pc));
-IF_Stage_Registers if_stage_reg( .rst(SW[0]), .clk(KEY[1]), .flush(SW[2]) , .PC_in(new_pc), .Instruction_in(instruction), .PC(pc_reg_wire), .Instruction(instruction_reg_wire));
+IF_Stage if_stage(.rst(SW[0]), .Br_taken(SW[1]), .Br_offset(32'h000000FF), .PC(pc_to_ID_wire), .Instruction(instruction), .new_PC(new_pc));
+IF_Stage_Registers if_stage_reg( .rst(SW[0]), .clk(CLOCK_50), .flush(SW[2]) , .PC_in(new_pc),
+ .Instruction_in(instruction), .PC(pc_to_ID_wire), .Instruction(instruction_reg_wire));
 
-Register_File reg_file(.rst(SW[0]), .clk(KEY[1]), .src1_address(address), .src2_address(5'd0), .write_enable(SW[3]),
-.address(5'd2), .data(32'd121), .reg1(reg1_out), .reg2(reg2_out) );
+Register_File reg_file(.rst(SW[0]), .clk(CLOCK_50), .src1_address(instruction_reg_wire[20:16]),
+ .src2_address(instruction_reg_wire[15:11]), .write_enable(SW[3]), .address(5'd2), .data(32'd121),
+ .reg1(reg1_out), .reg2(reg2_out));
 
+ID_Stage id_stage(.rst(SW[0]), .clk(CLOCK_50), .Instruction(instruction_reg_wire), .reg1(reg1_out), .reg2(reg2_out) );
+ID_Stage_registers id_stage_registers(.rst(SW[0]), .clk(CLOCK_50), .PC_in(pc_to_ID_wire),.PC_out(pc_to_EXE_wire));
+
+EXE_Stage exe_stage(.clk(CLOCK_50));
+EXE_Stage_registers exe_stage_registers(.rst(SW[0]), .clk(CLOCK_50), .PC_in(pc_to_EXE_wire), .PC_out(pc_to_MEM_wire));
+
+/*
 always @ (posedge KEY[1]) begin
 	address <= address + 5'd1;
 	if(address == 5'd7)
 		address <= 5'd0;
 end
+*/
 
 assign LEDG[0] = KEY[1];
 assign LEDR[0] = SW[0];
@@ -337,6 +347,8 @@ assign LEDR[2] = SW[2];
 assign LEDR[3] = SW[3];
 assign LEDR[4] = SW[4];
 
-To_7segments t7( .data(reg1_out), .h0(HEX0), .h1(HEX1), .h2(HEX2), .h3(HEX3), .h4(HEX4), .h5(HEX5), .h6(HEX6), .h7(HEX7));
+To_7segments t7( .data(new_pc), .h0(HEX0), .h1(HEX1), .h2(HEX2), .h3(HEX3), .h4(HEX4), .h5(HEX5), .h6(HEX6), .h7(HEX7));
+//To_7segments t7( .data({reg1_out[7:0],reg2_out[7:0],pc_to_EXE_wire[7:0],pc_to_ID_wire[3:0],new_pc[3:0]}),
+// .h0(HEX0), .h1(HEX1), .h2(HEX2), .h3(HEX3), .h4(HEX4), .h5(HEX5), .h6(HEX6), .h7(HEX7));
 
 endmodule

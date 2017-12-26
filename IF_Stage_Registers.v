@@ -10,7 +10,11 @@ module IF_Stage_Registers
 	);
 
 	always @ ( posedge clk ) begin
+		if(rst) begin
+			PC <= 32'd0;
+		end else begin
+			PC <= PC_in;
+		end
 		Instruction <= Instruction_in;
-		PC <= PC_in;
 	end
 endmodule

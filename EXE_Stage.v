@@ -7,3 +7,4 @@ module EXE_Stage
 
     output [31:0] ALU_result
   );
+endmodule

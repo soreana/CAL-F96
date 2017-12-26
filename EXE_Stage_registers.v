@@ -13,11 +13,17 @@ module EXE_Stage_registers
 		input [31:0] Dest_in,
 
 		output reg WB_EN,
-    // MEM Signals 
+    // MEM Signals
 		output reg MEM_R_EN,
 		output reg MEM_W_EN,
-		output reg [31:0] PC,
+		output reg [31:0] PC_out,
 		output reg [31:0] ALU_result,
 		output reg [31:0] ST_val,
-		output reg [4:0] Dest,
+		output reg [4:0] Dest
   );
+
+  always @ (posedge clk) begin
+    PC_out <= PC_in;
+  end
+
+endmodule

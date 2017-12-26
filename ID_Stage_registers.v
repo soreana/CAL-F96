@@ -1,13 +1,13 @@
-module ID_Stage_registers 
+module ID_Stage_registers
 	(
     input clk,
     input rst,
-    // input of ID stage registers
+    // input of ID stage
+		input [31:0] PC_in,
     input [4:0] Dest_in,
     input [31:0] Reg2_in,
     input [31:0] Val2_in,
     input [31:0] Val1_in,
-		input [31:0] PC_in,
 		input Br_taken_in,
 		input [3:0] EXE_CMD_in,
 		input MEM_R_EN_in,
@@ -27,5 +27,8 @@ module ID_Stage_registers
 		output reg WB_EN
 	);
 
+	always @ (posedge clk) begin
+		PC_out = PC_in;
+	end
+
 endmodule
-	

@@ -11,3 +11,5 @@ module MEM_Stage
     // MEM_Signals
     output [31:0] Mem_read_value
   );
+
+endmodule

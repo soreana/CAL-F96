@@ -3,7 +3,7 @@ module ID_Stage
 		input clk,
 		input rst,
 		// FROM IF
-		input [31:0] Instructoin,
+		input [31:0] Instruction,
 		// From register file
 		input [31:0] reg1,
 		input [31:0] reg2,
