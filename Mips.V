@@ -312,8 +312,6 @@ wire [31:0] pc_to_MEM_wire;
 wire [31:0] instruction_reg_wire;
 wire [31:0] reg1_out;
 wire [31:0] reg2_out;
-reg [4:0] address;
-
 
 assign flush =  1'b0;
 
