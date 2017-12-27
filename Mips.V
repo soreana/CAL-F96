@@ -343,6 +343,8 @@ wire MEM_R_EN_to_MEM;
 wire MEM_W_EN_to_MEM;
 wire WB_EN_to_MEM;
 
+wire [31:0] MEM_R_result_to_reg;
+
 assign flush =  1'b0;
 
 //IF_Stage if_Stage(.rst(SW[0]),.clk(CLK_50),.Br_taken(1'b0),.Br_offset(32'hFFFFFFFF),.PC(pc),.Instruction(instruction));
@@ -444,6 +446,17 @@ EXE_Stage_registers exe_stage_registers(
 	.MEM_W_EN(MEM_W_EN_to_MEM),
 	.WB_EN(WB_EN_to_MEM)
 );
+
+	Mem_Stage mem_stage(
+		.rst(SW[0]),
+		.clk(CLOCK_50),
+		.MEM_R_EN_in(MEM_R_EN_to_MEM),
+		.MEM_W_EN_in(MEM_W_EN_to_MEM),
+		.address(ALU_result_to_MEM),
+		.ST_val(ST_val_to_MEM),
+
+		.MEM_R_result(MEM_R_result_to_reg)
+		);
 
 assign LEDG[0] = KEY[1];
 assign LEDR[0] = SW[0];

@@ -1,15 +1,29 @@
 module MEM_Stage
   (
     input clk,
-    // MEM_Signals
+    input rst,
     input MEM_R_EN_in,
 		input MEM_W_EN_in,
 
-    input [31:0] ALU_result_in,
+    input [31:0] address,
     input [31:0] ST_val,
 
-    // MEM_Signals
-    output [31:0] Mem_read_value
+    output [31:0] MEM_R_result
   );
 
+  reg [31:0] memory [0:63];
+  integer i;
+
+  assign MEM_R_result = memory[((address>>2)<<2) - 32'd1024 ];
+
+  always @ (posedge clk or posedge rst) begin
+    if(rst) begin
+      for(i = 0; i<64; i=i+1) begin
+        memory[i]<= i;
+      end
+    end else begin
+      if(MEM_W_EN == 1'b1) begin
+        memory[(address>>2)<<2] <= ST_val;
+    end
+  end
 endmodule
