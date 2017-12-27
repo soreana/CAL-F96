@@ -346,13 +346,36 @@ wire WB_EN_to_MEM;
 assign flush =  1'b0;
 
 //IF_Stage if_Stage(.rst(SW[0]),.clk(CLK_50),.Br_taken(1'b0),.Br_offset(32'hFFFFFFFF),.PC(pc),.Instruction(instruction));
-IF_Stage if_stage(.rst(SW[0]), .Br_taken(SW[1]), .Br_offset(32'h000000FF), .PC(pc_to_ID_wire), .Instruction(instruction), .new_PC(new_pc));
-IF_Stage_Registers if_stage_reg( .rst(SW[0]), .clk(CLOCK_50), .flush(SW[2]) , .PC_in(new_pc),
- .Instruction_in(instruction), .PC(pc_to_ID_wire), .Instruction(instruction_reg_wire));
+IF_Stage if_stage(
+	.rst(SW[0]),
+	.Br_taken(SW[1]),
+	.Br_offset(32'h000000FF),
+	.PC(pc_to_ID_wire),
+	.Instruction(instruction),
+	.new_PC(new_pc)
+);
 
-Register_File reg_file(.rst(SW[0]), .clk(CLOCK_50), .src1_address(instruction_reg_wire[20:16]),
- .src2_address(instruction_reg_wire[15:11]), .write_enable(SW[3]), .address(5'd2), .data(32'd121),
- .reg1(reg1_out), .reg2(reg2_out));
+IF_Stage_Registers if_stage_reg(
+	.rst(SW[0]),
+	.clk(CLOCK_50),
+	.flush(SW[2]),
+	.PC_in(new_pc),
+ .Instruction_in(instruction),
+ .PC(pc_to_ID_wire),
+ .Instruction(instruction_reg_wire)
+);
+
+Register_File reg_file(
+	.rst(SW[0]),
+	.clk(CLOCK_50),
+	.src1_address(instruction_reg_wire[20:16]),
+	.src2_address(instruction_reg_wire[15:11]),
+	.write_enable(SW[3]),
+	.address(5'd2),
+	.data(32'd121),
+	.reg1(reg1_out),
+	.reg2(reg2_out)
+);
 
 ID_Stage id_stage(
 	.rst(SW[0]),
@@ -429,7 +452,18 @@ assign LEDR[2] = SW[2];
 assign LEDR[3] = SW[3];
 assign LEDR[4] = SW[4];
 
-To_7segments t7( .data(new_pc), .h0(HEX0), .h1(HEX1), .h2(HEX2), .h3(HEX3), .h4(HEX4), .h5(HEX5), .h6(HEX6), .h7(HEX7));
+To_7segments t7(
+	.data(new_pc),
+	.h0(HEX0),
+	.h1(HEX1),
+	.h2(HEX2),
+	.h3(HEX3),
+	.h4(HEX4),
+	.h5(HEX5),
+	.h6(HEX6),
+	.h7(HEX7)
+);
+
 //To_7segments t7( .data({reg1_out[7:0],reg2_out[7:0],pc_to_EXE_wire[7:0],pc_to_ID_wire[3:0],new_pc[3:0]}),
 // .h0(HEX0), .h1(HEX1), .h2(HEX2), .h3(HEX3), .h4(HEX4), .h5(HEX5), .h6(HEX6), .h7(HEX7));
 
