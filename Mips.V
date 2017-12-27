@@ -308,7 +308,6 @@ wire [31:0] new_pc;
 wire [31:0] instruction;
 wire [31:0] pc_to_ID_wire;
 wire [31:0] pc_to_EXE_wire;
-wire [31:0] pc_to_MEM_wire;
 wire [31:0] instruction_reg_wire;
 wire [31:0] reg1_out;
 wire [31:0] reg2_out;
@@ -333,6 +332,16 @@ wire Br_taken_to_exe;
 wire MEM_R_EN_to_exe;
 wire MEM_W_EN_to_exe;
 wire WB_EN_to_exe;
+
+wire [31:0] ALU_result_to_reg;
+wire [31:0] pc_to_MEM;
+wire [31:0] ALU_result_to_MEM;
+wire [31:0] ST_val_to_MEM;
+wire [4:0] Dest_to_MEM;
+
+wire MEM_R_EN_to_MEM;
+wire MEM_W_EN_to_MEM;
+wire WB_EN_to_MEM;
 
 assign flush =  1'b0;
 
@@ -384,16 +393,34 @@ ID_Stage_registers id_stage_registers(
   .WB_EN(WB_EN_to_exe)
 );
 
-EXE_Stage exe_stage(.clk(CLOCK_50));
-EXE_Stage_registers exe_stage_registers(.rst(SW[0]), .clk(CLOCK_50), .PC_in(pc_to_EXE_wire), .PC_out(pc_to_MEM_wire));
+EXE_Stage exe_stage(
+	.clk(CLOCK_50),
+	.EXE_CMD(exe_cmd_to_EXE),
+	.val1(val1_to_EXE),
+	.val2(val2_to_EXE),
+	.ALU_result(ALU_result_to_reg)
+);
 
-/*
-always @ (posedge KEY[1]) begin
-	address <= address + 5'd1;
-	if(address == 5'd7)
-		address <= 5'd0;
-end
-*/
+EXE_Stage_registers exe_stage_registers(
+	.rst(SW[0]),
+	.clk(CLOCK_50),
+	.PC_in(pc_to_EXE_wire),
+	.ALU_result_in(ALU_result_to_reg),
+	.ST_val_in(Reg2_to_EXE),
+	.Dest_in(Dest_to_EXE),
+	.MEM_R_EN_in(MEM_R_EN_to_exe),
+	.MEM_W_EN_in(MEM_W_EN_to_exe),
+	.WB_EN_IN(WB_EN_to_exe),
+
+	.PC_out(pc_to_MEM),
+	.ALU_result(ALU_result_to_MEM),
+	.ST_val(ST_val_to_MEM),
+	.Dest(Dest_to_MEM),
+
+	.MEM_R_EN(MEM_R_EN_to_MEM),
+	.MEM_W_EN(MEM_W_EN_to_MEM),
+	.WB_EN(WB_EN_to_MEM)
+);
 
 assign LEDG[0] = KEY[1];
 assign LEDR[0] = SW[0];

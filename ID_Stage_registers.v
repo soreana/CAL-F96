@@ -31,12 +31,12 @@ module ID_Stage_registers
 		if(rst) begin
 			{Dest,Reg2,Val2,Val1,PC_out,EXE_CMD,Br_taken,MEM_R_EN,MEM_W_EN,WB_EN} <= 0;
 		end else begin
-			Dest = Dest_in;
-			Reg2 = Reg2_in;
-			Val2 = Val2_in;
-			Val1 = Val1_in;
-			PC_out = PC_in;
-			Br_taken = Br_taken_in;
+			Dest <= Dest_in;
+			Reg2 <= Reg2_in;
+			Val2 <= Val2_in;
+			Val1 <= Val1_in;
+			PC_out <= PC_in;
+			Br_taken <= Br_taken_in;
 			EXE_CMD = EXE_CMD_in;
 			MEM_R_EN = MEM_R_EN_in;
 			MEM_W_EN = MEM_W_EN_in;
