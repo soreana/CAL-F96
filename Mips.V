@@ -313,6 +313,27 @@ wire [31:0] instruction_reg_wire;
 wire [31:0] reg1_out;
 wire [31:0] reg2_out;
 
+wire [4:0] Dest_to_reg;
+wire [31:0] Reg2_to_reg;
+wire [31:0] val1_to_reg;
+wire [31:0] val2_to_reg;
+wire [3:0] exe_cmd_to_reg;
+
+wire [4:0] Dest_to_EXE;
+wire [31:0] Reg2_to_EXE;
+wire [31:0] val1_to_EXE;
+wire [31:0] val2_to_EXE;
+wire [3:0] exe_cmd_to_EXE;
+wire Br_taken_in_to_reg;
+wire MEM_R_EN_in_to_reg;
+wire MEM_W_EN_in_te_reg;
+wire WB_EN_IN_to_reg;
+
+wire Br_taken_to_exe;
+wire MEM_R_EN_to_exe;
+wire MEM_W_EN_to_exe;
+wire WB_EN_to_exe;
+
 assign flush =  1'b0;
 
 //IF_Stage if_Stage(.rst(SW[0]),.clk(CLK_50),.Br_taken(1'b0),.Br_offset(32'hFFFFFFFF),.PC(pc),.Instruction(instruction));
@@ -324,8 +345,44 @@ Register_File reg_file(.rst(SW[0]), .clk(CLOCK_50), .src1_address(instruction_re
  .src2_address(instruction_reg_wire[15:11]), .write_enable(SW[3]), .address(5'd2), .data(32'd121),
  .reg1(reg1_out), .reg2(reg2_out));
 
-ID_Stage id_stage(.rst(SW[0]), .clk(CLOCK_50), .Instruction(instruction_reg_wire), .reg1(reg1_out), .reg2(reg2_out) );
-ID_Stage_registers id_stage_registers(.rst(SW[0]), .clk(CLOCK_50), .PC_in(pc_to_ID_wire),.PC_out(pc_to_EXE_wire));
+ID_Stage id_stage(
+	.rst(SW[0]),
+	.clk(CLOCK_50),
+	.Instruction(instruction_reg_wire),
+	.reg1(reg1_out),
+	.reg2(reg2_out),
+	.Dest(Dest_to_reg),
+	.Reg2(Reg2_to_reg),
+	.Val1(val1_to_reg),
+	.Val2(val2_to_reg),
+	.EXE_CMD(exe_cmd_to_reg)
+);
+
+ID_Stage_registers id_stage_registers(
+	.rst(SW[0]),
+	.clk(CLOCK_50),
+	.PC_in(pc_to_ID_wire),
+  .Dest_in(Dest_to_reg),
+  .Reg2_in(Reg2_to_reg),
+  .Val1_in(val1_to_reg),
+  .Val2_in(val2_to_reg),
+	.EXE_CMD_in(exe_cmd_to_reg),
+	.Br_taken_in(Br_taken_in_to_reg),
+	.MEM_R_EN_in(MEM_R_EN_in_to_reg),
+	.MEM_W_EN_in(MEM_W_EN_in_te_reg),
+  .WB_EN_IN(WB_EN_IN_to_reg),
+
+	.PC_out(pc_to_EXE_wire),
+  .Dest(Dest_to_EXE),
+  .Reg2(Reg2_to_EXE),
+  .Val1(val1_to_EXE),
+  .Val2(val2_to_EXE),
+	.EXE_CMD(exe_cmd_to_EXE),
+	.Br_taken(Br_taken_to_exe),
+	.MEM_R_EN(MEM_R_EN_to_exe),
+	.MEM_W_EN(MEM_W_EN_to_exe),
+  .WB_EN(WB_EN_to_exe)
+);
 
 EXE_Stage exe_stage(.clk(CLOCK_50));
 EXE_Stage_registers exe_stage_registers(.rst(SW[0]), .clk(CLOCK_50), .PC_in(pc_to_EXE_wire), .PC_out(pc_to_MEM_wire));
