@@ -345,6 +345,16 @@ wire WB_EN_to_MEM;
 
 wire [31:0] MEM_R_result_to_reg;
 
+wire [31:0] ALU_result_to_WB;
+wire [31:0] MEM_R_value_to_WB;
+wire [4:0] Dest_to_WB;
+wire WB_EN_to_WB;
+wire MEM_R_EN_to_WB;
+
+wire WB_EN_to_ID;
+wire [31:0] write_value_to_ID;
+wire [4:0] Des_to_ID;
+
 assign flush =  1'b0;
 
 //IF_Stage if_Stage(.rst(SW[0]),.clk(CLK_50),.Br_taken(1'b0),.Br_offset(32'hFFFFFFFF),.PC(pc),.Instruction(instruction));
@@ -362,9 +372,9 @@ IF_Stage_Registers if_stage_reg(
 	.clk(CLOCK_50),
 	.flush(SW[2]),
 	.PC_in(new_pc),
- .Instruction_in(instruction),
- .PC(pc_to_ID_wire),
- .Instruction(instruction_reg_wire)
+	.Instruction_in(instruction),
+	.PC(pc_to_ID_wire),
+	.Instruction(instruction_reg_wire)
 );
 
 Register_File reg_file(
@@ -372,9 +382,9 @@ Register_File reg_file(
 	.clk(CLOCK_50),
 	.src1_address(instruction_reg_wire[20:16]),
 	.src2_address(instruction_reg_wire[15:11]),
-	.write_enable(SW[3]),
-	.address(5'd2),
-	.data(32'd121),
+	.write_enable(WB_EN_to_ID),
+	.address(Des_to_ID),
+	.data(write_value_to_ID),
 	.reg1(reg1_out),
 	.reg2(reg2_out)
 );
@@ -447,7 +457,7 @@ EXE_Stage_registers exe_stage_registers(
 	.WB_EN(WB_EN_to_MEM)
 );
 
-	Mem_Stage mem_stage(
+	MEM_Stage mem_stage(
 		.rst(SW[0]),
 		.clk(CLOCK_50),
 		.MEM_R_EN_in(MEM_R_EN_to_MEM),
@@ -456,26 +466,78 @@ EXE_Stage_registers exe_stage_registers(
 		.ST_val(ST_val_to_MEM),
 
 		.MEM_R_result(MEM_R_result_to_reg)
-		);
+	);
 
-assign LEDG[0] = KEY[1];
-assign LEDR[0] = SW[0];
-assign LEDR[1] = SW[1];
-assign LEDR[2] = SW[2];
-assign LEDR[3] = SW[3];
-assign LEDR[4] = SW[4];
+	MEM_Stage_registers mem_stage_registers(
+		.rst(SW[0]),
+		.clk(CLOCK_50),
+		.WB_EN_IN(WB_EN_to_MEM),
+		.MEM_R_EN_in(MEM_R_EN_in),
 
-To_7segments t7(
-	.data(new_pc),
-	.h0(HEX0),
-	.h1(HEX1),
-	.h2(HEX2),
-	.h3(HEX3),
-	.h4(HEX4),
-	.h5(HEX5),
-	.h6(HEX6),
-	.h7(HEX7)
-);
+		.ALU_result_in(ALU_result_to_MEM),
+		.Mem_R_value_in(MEM_R_result_to_reg),
+		.Dest_in(Dest_to_MEM),
+
+    .ALU_result(ALU_result_to_WB),
+    .MEM_R_value(MEM_R_value_to_WB),
+		.Dest(Dest_to_WB),
+		.WB_EN(WB_EN_to_WB),
+		.MEM_R_EN(MEM_R_EN_to_WB)
+	);
+
+	WB_Stage wb_stage(
+		.clk(CLOCK_50),
+		.MEM_R_EN(MEM_R_EN_to_WB),
+		.WB_EN_IN(WB_EN_to_WB),
+		.ALU_result(ALU_result_to_WB),
+		.Mem_read_value(MEM_R_value_to_WB),
+		.Dest_in(Dest_to_WB),
+
+		.WB_EN(WB_EN_to_ID),
+		.write_value(write_value_to_ID),
+		.Dest(Des_to_ID)
+	);
+
+	assign LEDG[0] = KEY[1];
+	assign LEDR[0] = SW[0];
+	assign LEDR[1] = SW[1];
+	assign LEDR[2] = SW[2];
+	assign LEDR[3] = SW[3];
+	assign LEDR[4] = SW[4];
+
+	// deguning part
+	wire [5:0] op_code_d ;
+	wire [5:0] rd_d;
+	wire [5:0] rs1_d;
+	wire [5:0] rs2_d;
+	wire [15:0] immediate_d;
+	wire [15:0] offset_d;
+
+	assign op_code_d = instruction[31:26];
+	assign rd_d = instruction[25:21];
+	assign rs1_d = instruction[20:16];
+	assign rs2_d = instruction[15:11];
+	assign immediate_d = instruction[15:0];
+	assign offset_d = instruction[15:0];
+
+
+
+
+
+
+
+
+	To_7segments t7(
+		.data(ALU_result_to_reg),
+		.h0(HEX0),
+		.h1(HEX1),
+		.h2(HEX2),
+		.h3(HEX3),
+		.h4(HEX4),
+		.h5(HEX5),
+		.h6(HEX6),
+		.h7(HEX7)
+	);
 
 //To_7segments t7( .data({reg1_out[7:0],reg2_out[7:0],pc_to_EXE_wire[7:0],pc_to_ID_wire[3:0],new_pc[3:0]}),
 // .h0(HEX0), .h1(HEX1), .h2(HEX2), .h3(HEX3), .h4(HEX4), .h5(HEX5), .h6(HEX6), .h7(HEX7));
