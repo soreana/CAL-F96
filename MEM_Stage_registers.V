@@ -1,4 +1,4 @@
-module Mem_Stage_registers
+module MEM_Stage_registers
   (
     input clk,
     input rst,
@@ -20,12 +20,12 @@ module Mem_Stage_registers
 
     always @ (posedge clk or posedge rst) begin
 		  if(rst) begin
-			   {Dest,ALU_result,Mem_R_valueMEM_R_EN,WB_EN} <= 0;
+			   {Dest,ALU_result,MEM_R_value,MEM_R_EN,WB_EN} <= 0;
       end else begin
 			   MEM_R_EN <= MEM_R_EN_in;
          WB_EN <= WB_EN_IN;
          ALU_result <= ALU_result_in;
-         Mem_R_value <= Mem_R_value_in;
+         MEM_R_value <= Mem_R_value_in;
          Dest <= Dest_in;
       end
     end

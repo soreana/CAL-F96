@@ -1,4 +1,4 @@
-module WB_stage
+module WB_Stage
   (
     input clk,
 		input MEM_R_EN,
@@ -13,10 +13,7 @@ module WB_stage
   );
 
   assign write_value = (MEM_R_EN) ? Mem_read_value : ALU_result;
-
-  always @ (posedge clk) begin
-    WB_EN <= WB_EN_IN;
-    Dest <= Dest_in;
-  end
+  assign WB_EN = WB_EN_IN;
+  assign Dest = Dest_in;
 
 endmodule

@@ -6,7 +6,7 @@ module EXE_Stage_registers
 		input [31:0] PC_in,
 		input [31:0] ALU_result_in,
 		input [31:0] ST_val_in,
-		input [31:0] Dest_in,
+		input [4:0] Dest_in,
 
 		input MEM_R_EN_in,
 		input MEM_W_EN_in,

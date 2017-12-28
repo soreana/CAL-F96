@@ -22,8 +22,9 @@ module MEM_Stage
         memory[i]<= i;
       end
     end else begin
-      if(MEM_W_EN == 1'b1) begin
+      if(MEM_W_EN_in == 1'b1) begin
         memory[(address>>2)<<2] <= ST_val;
+      end
     end
   end
 endmodule
