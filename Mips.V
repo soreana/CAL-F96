@@ -520,13 +520,6 @@ EXE_Stage_registers exe_stage_registers(
 	assign immediate_d = instruction[15:0];
 	assign offset_d = instruction[15:0];
 
-
-
-
-
-
-
-
 	To_7segments t7(
 		.data(ALU_result_to_reg),
 		.h0(HEX0),

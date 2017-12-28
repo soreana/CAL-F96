@@ -30,4 +30,7 @@ module Controll_Unit (
                  (opcode[5:0] == 6'd33) ? 1'b1 :
                  1'b0;
 
+  assign MEM_R_EN = (opcode[5:0] == 6'd36) ? 1'b1 : 1'b0;
+  assign MEM_W_EN = (opcode[5:0] == 6'd36) ? 1'b1 : 1'b0;
+
 endmodule // Controll_Unit

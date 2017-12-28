@@ -24,13 +24,15 @@ module ID_Stage
 		output WB_EN
 	);
 
-	Controll_Unit controll_unit(.opcode(Instruction[31:26]), .exec_cmd(EXE_CMD));
+	wire is_imm;
+
+	Controll_Unit controll_unit(.opcode(Instruction[31:26]), .exec_cmd(EXE_CMD), .is_imm(is_imm));
 
 	assign src1 = Instruction[20:16];
 	assign src2 = Instruction[15:11];
 	assign Dest = Instruction[25:21];
 	assign Reg2 = reg2;
 	assign Val1 = reg1 ;
-	assign Val2 = reg2 ;
+	assign Val2 = (is_imm) ? {{16{Instruction[15]}},Instruction[15:0]} : reg2 ;
 
 endmodule
