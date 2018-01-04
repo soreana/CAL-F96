@@ -401,7 +401,6 @@ ID_Stage id_stage(
 	.reg1(reg1_out),
 	.reg2(reg2_out),
 
-
 	.src1(src1_to_register_file),
 	.src2(src2_to_register_file),
 	.Dest(Dest_to_reg),

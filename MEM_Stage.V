@@ -14,7 +14,7 @@ module MEM_Stage
   reg [31:0] memory [0:63];
   integer i;
 
-  assign MEM_R_result = memory[((address>>2)<<2) - 32'd1024 ];
+  assign MEM_R_result = memory[address];
 
   always @ (posedge clk or posedge rst) begin
     if(rst) begin
@@ -23,7 +23,7 @@ module MEM_Stage
       end
     end else begin
       if(MEM_W_EN_in == 1'b1) begin
-        memory[(address>>2)<<2] <= ST_val;
+        memory[address] <= ST_val;
       end
     end
   end

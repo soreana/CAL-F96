@@ -22,7 +22,7 @@ always @ (negedge clk or posedge rst) begin
       regfile[i]<= i;
     end
   end else begin
-    if(write_enable && address != 0) begin
+    if(write_enable == 1'b1 && address != 0) begin
       regfile[address] <= data;
 		end
   end
