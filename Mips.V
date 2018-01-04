@@ -312,6 +312,11 @@ wire [31:0] instruction_reg_wire;
 wire [31:0] reg1_out;
 wire [31:0] reg2_out;
 
+// todo
+wire [4:0] src1_to_register_file;
+wire [4:0] src2_to_register_file;
+
+
 wire [4:0] Dest_to_reg;
 wire [31:0] Reg2_to_reg;
 wire [31:0] val1_to_reg;
@@ -380,8 +385,8 @@ IF_Stage_Registers if_stage_reg(
 Register_File reg_file(
 	.rst(SW[0]),
 	.clk(CLOCK_50),
-	.src1_address(instruction_reg_wire[20:16]),
-	.src2_address(instruction_reg_wire[15:11]),
+	.src1_address(src1_to_register_file),
+	.src2_address(src2_to_register_file),
 	.write_enable(WB_EN_to_ID),
 	.address(Des_to_ID),
 	.data(write_value_to_ID),
@@ -395,11 +400,18 @@ ID_Stage id_stage(
 	.Instruction(instruction_reg_wire),
 	.reg1(reg1_out),
 	.reg2(reg2_out),
+
+
+	.src1(src1_to_register_file),
+	.src2(src2_to_register_file),
 	.Dest(Dest_to_reg),
 	.Reg2(Reg2_to_reg),
 	.Val1(val1_to_reg),
 	.Val2(val2_to_reg),
-	.EXE_CMD(exe_cmd_to_reg)
+	.EXE_CMD(exe_cmd_to_reg),
+	.MEM_W_EN(MEM_W_EN_in_te_reg),
+	.MEM_R_EN(MEM_R_EN_in_to_reg),
+	.WB_EN(WB_EN_IN_to_reg)
 );
 
 ID_Stage_registers id_stage_registers(

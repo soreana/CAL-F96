@@ -6,7 +6,7 @@ module Controll_Unit (
   output MEM_R_EN,
   output WB_EN,
   output is_imm
-  );
+);
 
   assign exec_cmd = (opcode[5:0] == 6'd1 ) ? 4'd0:
                     (opcode[5:0] == 6'd3 ) ? 4'd1:
@@ -20,17 +20,27 @@ module Controll_Unit (
                     (opcode[5:0] == 6'd12 ) ? 4'd9:
                     (opcode[5:0] == 6'd32 ) ? 4'd0:
                     (opcode[5:0] == 6'd33 ) ? 4'd1 :
-                    (opcode[5:0] == 6'd36 ) ? 4'd12 :
-                    (opcode[5:0] == 6'd37 ) ? 4'd13 :
+                    (opcode[5:0] == 6'd36 ) ? 4'd0 :
+                    (opcode[5:0] == 6'd37 ) ? 4'd0 :
                     (opcode[5:0] == 6'd40 ) ? 4'd14 :
                     (opcode[5:0] == 6'd41 ) ? 4'd15 :
                     (opcode[5:0] == 6'd42 ) ? 4'd16 : 4'd0;
 
   assign is_imm = (opcode[5:0] == 6'd32) ? 1'b1 :
                  (opcode[5:0] == 6'd33) ? 1'b1 :
+                 (opcode[5:0] == 6'd36) ? 1'b1 :
+                 (opcode[5:0] == 6'd37) ? 1'b1 :
+                 (opcode[5:0] == 6'd40) ? 1'b1 :
+                 (opcode[5:0] == 6'd41) ? 1'b1 :
+                 (opcode[5:0] == 6'd42) ? 1'b1 :
                  1'b0;
 
   assign MEM_R_EN = (opcode[5:0] == 6'd36) ? 1'b1 : 1'b0;
-  assign MEM_W_EN = (opcode[5:0] == 6'd36) ? 1'b1 : 1'b0;
+  assign MEM_W_EN = (opcode[5:0] == 6'd37) ? 1'b1 : 1'b0;
+  assign WB_EN = (opcode[5:0] <= 6'd36) ? 1'b1 : 1'b0;
+
+  assign st_or_bne = (opcode[5:0] == 6'd37 ) ? 1'b1 :
+                     (opcode[5:0] == 6'd37 ) ? 1'b1 :
+                     1'b0;
 
 endmodule // Controll_Unit
