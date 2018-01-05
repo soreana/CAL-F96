@@ -1,4 +1,5 @@
 module Controll_Unit (
+  input rst,
   input [5:0] opcode,
   output [3:0] exec_cmd,
   output st_or_bne,

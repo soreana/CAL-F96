@@ -35,6 +35,7 @@ module ID_Stage (
 
 
 	Controll_Unit controll_unit(
+		.rst(rst),
 		.opcode(Instruction[31:26]),
 		.exec_cmd(EXE_CMD),
 		.st_or_bne(st_or_bne_local),
@@ -49,6 +50,7 @@ module ID_Stage (
 	);
 
 	Condition_check condition_check(
+		.rst(rst),
 		.reg1(reg1),
 		.reg2(reg2),
 		.is_br(is_br_local),

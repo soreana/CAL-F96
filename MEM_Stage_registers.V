@@ -22,11 +22,11 @@ module MEM_Stage_registers
 		  if(rst) begin
 			   {Dest,ALU_result,MEM_R_value,MEM_R_EN,WB_EN} <= 0;
       end else begin
-			   MEM_R_EN <= MEM_R_EN_in;
-         WB_EN <= WB_EN_IN;
-         ALU_result <= ALU_result_in;
-         MEM_R_value <= Mem_R_value_in;
-         Dest <= Dest_in;
+			   MEM_R_EN = MEM_R_EN_in;
+         WB_EN = WB_EN_IN;
+         ALU_result = ALU_result_in;
+         MEM_R_value = Mem_R_value_in;
+         Dest = Dest_in;
       end
     end
 

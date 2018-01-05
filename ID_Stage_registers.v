@@ -36,7 +36,7 @@ module ID_Stage_registers
 			Val2 <= Val2_in;
 			Val1 <= Val1_in;
 			PC_out <= PC_in;
-			Br_taken <= Br_taken_in;
+			Br_taken = (Br_taken_in == 1'b1)? 1'b1 : 1'b0;
 			EXE_CMD = EXE_CMD_in;
 			MEM_R_EN = MEM_R_EN_in;
 			MEM_W_EN = MEM_W_EN_in;

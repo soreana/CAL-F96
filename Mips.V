@@ -302,8 +302,6 @@ input          TD_CLK27;            //	TV Decoder 27MHz CLK
 inout	[35:0]	GPIO_0;					//	GPIO Connection 0
 inout	[35:0]	GPIO_1;					//	GPIO Connection 1
 
-//IF_Stage if_(.rst(SW[0]),.clk(CLK_50),.Br_taken(1'b0),.Br_offset(32'hFFFFFFFF),.PC(32'hFFFFFFFF),.Instruction(32'hFFFFFFFF)));
-
 wire [31:0] new_pc;
 wire [31:0] pc_to_ID_wire;
 wire [31:0] pc_to_EXE_wire;
@@ -373,13 +371,14 @@ wire [31:0] MEM_R_value_to_WB;
 
 wire [31:0] write_value_to_ID;
 
-assign flush =  1'b0;
+wire IF_flush;
 
-//IF_Stage if_Stage(.rst(SW[0]),.clk(CLK_50),.Br_taken(1'b0),.Br_offset(32'hFFFFFFFF),.PC(pc),.Instruction(instruction));
+assign IF_flush = Br_taken_to_exe | Br_taken_in_to_reg ;
+
 IF_Stage if_stage(
 	.rst(SW[0]),
-	.Br_taken(SW[1]),
-	.Br_offset(32'h000000FF),
+	.Br_taken(Br_taken_to_exe),
+	.Br_offset(val2_to_EXE),
 	.PC(pc_to_ID_wire),
 	.Instruction(instruction),
 	.new_PC(new_pc)
@@ -388,7 +387,7 @@ IF_Stage if_stage(
 IF_Stage_Registers if_stage_reg(
 	.rst(SW[0]),
 	.clk(CLOCK_50),
-	.flush(SW[2]),
+	.flush(IF_flush),
 	.PC_in(new_pc),
 	.Instruction_in(instruction),
 	.PC(pc_to_ID_wire),
@@ -453,6 +452,7 @@ ID_Stage_registers id_stage_registers(
   .WB_EN(WB_EN_to_exe)
 );
 
+
 EXE_Stage exe_stage(
 	.clk(CLOCK_50),
 	.EXE_CMD(exe_cmd_to_EXE),
@@ -497,7 +497,7 @@ EXE_Stage_registers exe_stage_registers(
 		.rst(SW[0]),
 		.clk(CLOCK_50),
 		.WB_EN_IN(WB_EN_to_MEM),
-		.MEM_R_EN_in(MEM_R_EN_in),
+		.MEM_R_EN_in(MEM_R_EN_to_MEM),
 
 		.ALU_result_in(ALU_result_to_MEM),
 		.Mem_R_value_in(MEM_R_result_to_reg),
@@ -529,7 +529,6 @@ EXE_Stage_registers exe_stage_registers(
 	assign LEDR[2] = SW[2];
 	assign LEDR[3] = SW[3];
 	assign LEDR[4] = SW[4];
-
 
 
 	assign op_code_d = instruction[31:26];

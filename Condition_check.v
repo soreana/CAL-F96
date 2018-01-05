@@ -1,4 +1,5 @@
 module Condition_check (
+  input rst,
   input [31:0] reg1,
   input [31:0] reg2,
   input is_br,

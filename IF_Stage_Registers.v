@@ -9,12 +9,21 @@ module IF_Stage_Registers
 		output reg [31:0] Instruction
 	);
 
-	always @ ( posedge clk ) begin
+	always @ ( posedge clk or rst) begin
 		if(rst) begin
 			PC <= 32'd0;
+			Instruction <= 32'd0;
 		end else begin
-			PC <= PC_in;
+			if(flush == 1'b1) begin
+				PC <= PC_in - 32'd1;
+			end else begin
+				PC <= PC_in;
+			end
 		end
-		Instruction <= Instruction_in;
+			if(flush != 1'b1) begin
+				Instruction <= Instruction_in;
+			end else begin
+				Instruction <= 32'd0;
+			end
 	end
 endmodule
