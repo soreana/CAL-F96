@@ -28,6 +28,11 @@ module ID_Stage (
 	wire MEM_R_EN_local;
 	wire WB_EN_local;
 	wire st_or_bne_local;
+	wire is_jmp_local;
+	wire is_br_local;
+	wire br_type_local;
+	wire my_opinion_local;
+
 
 	Controll_Unit controll_unit(
 		.opcode(Instruction[31:26]),
@@ -36,7 +41,20 @@ module ID_Stage (
 		.MEM_W_EN(MEM_W_EN_local),
 		.MEM_R_EN(MEM_R_EN_local),
 		.WB_EN(WB_EN_local),
+
+		.is_jmp(is_jmp_local),
+  	.is_br(is_br_local),
+  	.br_type(br_type_local),
 		.is_imm(is_imm)
+	);
+
+	Condition_check condition_check(
+		.reg1(reg1),
+		.reg2(reg2),
+		.is_br(is_br_local),
+		.br_type(br_type_local),
+
+ 		.my_opinion(my_opinion_local)
 	);
 
 	assign src1 = Instruction[20:16];
@@ -48,5 +66,7 @@ module ID_Stage (
 	assign MEM_W_EN = MEM_W_EN_local;
 	assign MEM_R_EN = MEM_R_EN_local;
 	assign WB_EN = WB_EN_local;
+
+	assign Br_taken = (my_opinion_local | is_jmp_local) ;
 
 endmodule

@@ -305,60 +305,73 @@ inout	[35:0]	GPIO_1;					//	GPIO Connection 1
 //IF_Stage if_(.rst(SW[0]),.clk(CLK_50),.Br_taken(1'b0),.Br_offset(32'hFFFFFFFF),.PC(32'hFFFFFFFF),.Instruction(32'hFFFFFFFF)));
 
 wire [31:0] new_pc;
-wire [31:0] instruction;
 wire [31:0] pc_to_ID_wire;
 wire [31:0] pc_to_EXE_wire;
+wire [31:0] pc_to_MEM;
+
+wire [31:0] instruction;
 wire [31:0] instruction_reg_wire;
+
+// deguning part
+wire [5:0] op_code_d ;
+wire [5:0] rd_d;
+wire [5:0] rs1_d;
+wire [5:0] rs2_d;
+wire [15:0] immediate_d;
+wire [15:0] offset_d;
+
 wire [31:0] reg1_out;
 wire [31:0] reg2_out;
 
-// todo
 wire [4:0] src1_to_register_file;
 wire [4:0] src2_to_register_file;
 
-
+// Dest wires
 wire [4:0] Dest_to_reg;
-wire [31:0] Reg2_to_reg;
-wire [31:0] val1_to_reg;
-wire [31:0] val2_to_reg;
-wire [3:0] exe_cmd_to_reg;
-
 wire [4:0] Dest_to_EXE;
-wire [31:0] Reg2_to_EXE;
-wire [31:0] val1_to_EXE;
-wire [31:0] val2_to_EXE;
-wire [3:0] exe_cmd_to_EXE;
-wire Br_taken_in_to_reg;
-wire MEM_R_EN_in_to_reg;
-wire MEM_W_EN_in_te_reg;
-wire WB_EN_IN_to_reg;
-
-wire Br_taken_to_exe;
-wire MEM_R_EN_to_exe;
-wire MEM_W_EN_to_exe;
-wire WB_EN_to_exe;
-
-wire [31:0] ALU_result_to_reg;
-wire [31:0] pc_to_MEM;
-wire [31:0] ALU_result_to_MEM;
-wire [31:0] ST_val_to_MEM;
 wire [4:0] Dest_to_MEM;
-
-wire MEM_R_EN_to_MEM;
-wire MEM_W_EN_to_MEM;
-wire WB_EN_to_MEM;
-
-wire [31:0] MEM_R_result_to_reg;
-
-wire [31:0] ALU_result_to_WB;
-wire [31:0] MEM_R_value_to_WB;
 wire [4:0] Dest_to_WB;
-wire WB_EN_to_WB;
+wire [4:0] Des_to_ID;
+
+wire [31:0] Reg2_to_reg;
+wire [31:0] Reg2_to_EXE;
+wire [31:0] ST_val_to_MEM;
+
+wire [31:0] val1_to_reg;
+wire [31:0] val1_to_EXE;
+
+wire [31:0] val2_to_reg;
+wire [31:0] val2_to_EXE;
+
+wire [3:0] exe_cmd_to_reg;
+wire [3:0] exe_cmd_to_EXE;
+
+wire Br_taken_in_to_reg;
+wire Br_taken_to_exe;
+
+wire MEM_R_EN_in_to_reg;
+wire MEM_R_EN_to_exe;
+wire MEM_R_EN_to_MEM;
 wire MEM_R_EN_to_WB;
 
+wire MEM_W_EN_in_te_reg;
+wire MEM_W_EN_to_exe;
+wire MEM_W_EN_to_MEM;
+wire WB_EN_to_WB;
+
+wire WB_EN_IN_to_reg;
+wire WB_EN_to_exe;
+wire WB_EN_to_MEM;
 wire WB_EN_to_ID;
+
+wire [31:0] ALU_result_to_reg;
+wire [31:0] ALU_result_to_MEM;
+wire [31:0] ALU_result_to_WB;
+
+wire [31:0] MEM_R_result_to_reg;
+wire [31:0] MEM_R_value_to_WB;
+
 wire [31:0] write_value_to_ID;
-wire [4:0] Des_to_ID;
 
 assign flush =  1'b0;
 
@@ -408,6 +421,7 @@ ID_Stage id_stage(
 	.Val1(val1_to_reg),
 	.Val2(val2_to_reg),
 	.EXE_CMD(exe_cmd_to_reg),
+	.Br_taken(Br_taken_in_to_reg),
 	.MEM_W_EN(MEM_W_EN_in_te_reg),
 	.MEM_R_EN(MEM_R_EN_in_to_reg),
 	.WB_EN(WB_EN_IN_to_reg)
@@ -516,13 +530,7 @@ EXE_Stage_registers exe_stage_registers(
 	assign LEDR[3] = SW[3];
 	assign LEDR[4] = SW[4];
 
-	// deguning part
-	wire [5:0] op_code_d ;
-	wire [5:0] rd_d;
-	wire [5:0] rs1_d;
-	wire [5:0] rs2_d;
-	wire [15:0] immediate_d;
-	wire [15:0] offset_d;
+
 
 	assign op_code_d = instruction[31:26];
 	assign rd_d = instruction[25:21];

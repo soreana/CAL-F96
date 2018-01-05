@@ -5,6 +5,9 @@ module Controll_Unit (
   output MEM_W_EN,
   output MEM_R_EN,
   output WB_EN,
+  output is_jmp,
+  output is_br,
+  output br_type,
   output is_imm
 );
 
@@ -39,8 +42,12 @@ module Controll_Unit (
   assign MEM_W_EN = (opcode[5:0] == 6'd37) ? 1'b1 : 1'b0;
   assign WB_EN = (opcode[5:0] <= 6'd36) ? 1'b1 : 1'b0;
 
-  assign st_or_bne = (opcode[5:0] == 6'd37 ) ? 1'b1 :
-                     (opcode[5:0] == 6'd37 ) ? 1'b1 :
-                     1'b0;
+  assign st_or_bne = (opcode[5:0] == 6'd37 || opcode[5:0] == 6'd41 ) ? 1'b1 : 1'b0;
+
+  assign is_jmp = (opcode[5:0] == 6'd42) ? 1'b1 : 1'b0;
+
+  assign is_br = (opcode[5:0] == 6'd40 || opcode[5:0] == 6'd41 ) ? 1'b1 : 1'b0;
+
+  assign br_type = (opcode[5:0] == 6'd40 ) ? 1'b1 : 1'b0;
 
 endmodule // Controll_Unit
