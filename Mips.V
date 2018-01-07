@@ -372,6 +372,7 @@ wire [31:0] MEM_R_value_to_WB;
 wire [31:0] write_value_to_ID;
 
 wire IF_flush;
+wire hazard_Detected_wire;
 
 assign IF_flush = Br_taken_to_exe | Br_taken_in_to_reg ;
 
@@ -412,6 +413,10 @@ ID_Stage id_stage(
 	.Instruction(instruction_reg_wire),
 	.reg1(reg1_out),
 	.reg2(reg2_out),
+	.Exe_Dest(Dest_to_EXE),
+	.Mem_Dest(Dest_to_MEM),
+	.Exe_WB_en(WB_EN_to_exe),
+	.Mem_WB_en(WB_EN_to_MEM),
 
 	.src1(src1_to_register_file),
 	.src2(src2_to_register_file),
@@ -423,7 +428,8 @@ ID_Stage id_stage(
 	.Br_taken(Br_taken_in_to_reg),
 	.MEM_W_EN(MEM_W_EN_in_te_reg),
 	.MEM_R_EN(MEM_R_EN_in_to_reg),
-	.WB_EN(WB_EN_IN_to_reg)
+	.WB_EN(WB_EN_IN_to_reg),
+	.hazard_Detected(hazard_Detected_wire)
 );
 
 ID_Stage_registers id_stage_registers(
@@ -549,8 +555,5 @@ EXE_Stage_registers exe_stage_registers(
 		.h6(HEX6),
 		.h7(HEX7)
 	);
-
-//To_7segments t7( .data({reg1_out[7:0],reg2_out[7:0],pc_to_EXE_wire[7:0],pc_to_ID_wire[3:0],new_pc[3:0]}),
-// .h0(HEX0), .h1(HEX1), .h2(HEX2), .h3(HEX3), .h4(HEX4), .h5(HEX5), .h6(HEX6), .h7(HEX7));
 
 endmodule

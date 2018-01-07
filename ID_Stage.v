@@ -6,9 +6,14 @@ module ID_Stage (
 	input [31:0] reg1,
 	input [31:0] reg2,
 
+	input [4:0] Exe_Dest,
+	input [4:0] Mem_Dest,
+	input Exe_WB_en,
+	input Mem_WB_en,
+
 	// to ID stage registres
-	output [4:0] src1, // why ???
-	output [4:0] src2, // why ???
+	output [4:0] src1,
+	output [4:0] src2,
 	output [4:0] Dest,
 	output [31:0] Reg2,
 	output [31:0] Val1,
@@ -16,11 +21,11 @@ module ID_Stage (
 	output [3:0] EXE_CMD,
 
 	// todo
-	output IF_flush,
 	output Br_taken,
 	output MEM_W_EN,
 	output MEM_R_EN,
-	output WB_EN
+	output WB_EN,
+	output hazard_Detected
 );
 
 	wire is_imm;
@@ -57,6 +62,18 @@ module ID_Stage (
 		.br_type(br_type_local),
 
  		.my_opinion(my_opinion_local)
+	);
+
+	Hazard_Unit hazard_unit(
+		.src1(src1),
+		.src2(src2),
+		.Exe_Dest(Exe_Dest),
+		.Exe_WB_en(Exe_WB_en),
+		.Mem_Dest(Mem_Dest),
+		.Mem_WB_en(Mem_WB_en),
+  	.is_im(is_imm),
+
+  	.hazard_Detected(hazard_Detected)
 	);
 
 	assign src1 = Instruction[20:16];
