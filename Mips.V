@@ -391,6 +391,8 @@ IF_Stage_Registers if_stage_reg(
 	.flush(IF_flush),
 	.PC_in(new_pc),
 	.Instruction_in(instruction),
+	.hazard_Detected(hazard_Detected_wire),
+
 	.PC(pc_to_ID_wire),
 	.Instruction(instruction_reg_wire)
 );

@@ -82,9 +82,9 @@ module ID_Stage (
 	assign Reg2 = reg2;
 	assign Val1 = reg1 ;
 	assign Val2 = (is_imm) ? {{16{Instruction[15]}},Instruction[15:0]} : reg2 ;
-	assign MEM_W_EN = MEM_W_EN_local;
-	assign MEM_R_EN = MEM_R_EN_local;
-	assign WB_EN = WB_EN_local;
+	assign MEM_W_EN = (hazard_Detected == 1'b1 ) ? 1'b0 : MEM_W_EN_local;
+	assign MEM_R_EN = (hazard_Detected == 1'b1 ) ? 1'b0 : MEM_R_EN_local;
+	assign WB_EN = (hazard_Detected == 1'b1 ) ? 1'b0 : WB_EN_local;
 
 	assign Br_taken = (my_opinion_local | is_jmp_local) ;
 
