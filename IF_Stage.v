@@ -11,7 +11,7 @@ module IF_Stage
 	Instruction_Memory im( .address(PC), .instruction(Instruction));
 
 	assign new_PC = (rst) ? 32'd0 :
-									(Br_taken == 1'b1) ? (PC + Br_offset)
+									(Br_taken == 1'b1) ? (PC + Br_offset + 32'd1)
 									: PC + 32'd1;
 
 endmodule
