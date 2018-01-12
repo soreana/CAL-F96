@@ -5,6 +5,7 @@ module IF_Stage_Registers
 		input flush,
 		input [31:0] PC_in,
 		input [31:0] Instruction_in,
+		input hazard_Detected,
 		output reg [31:0] PC,
 		output reg [31:0] Instruction
 	);
@@ -14,12 +15,14 @@ module IF_Stage_Registers
 			PC <= 32'd0;
 			Instruction <= 32'd0;
 		end else begin
-			if(flush == 1'b1) begin
-				PC <= PC_in - 32'd1;
-				Instruction <= 32'd0;
-			end else begin
-				PC <= PC_in;
-				Instruction <= Instruction_in;
+			if(hazard_Detected == 1'b0) begin
+				if(flush == 1'b1) begin
+					PC <= PC_in - 32'd1;
+					Instruction <= 32'd0;
+				end else begin
+					PC <= PC_in;
+					Instruction <= Instruction_in;
+				end
 			end
 		end
 	end

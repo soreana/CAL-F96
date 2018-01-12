@@ -13,5 +13,5 @@ module IF_Stage
 	assign new_PC = (rst) ? 32'd0 :
 									(Br_taken == 1'b1) ? (PC + Br_offset)
 									: PC + 32'd1;
-									
+
 endmodule

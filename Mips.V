@@ -341,8 +341,8 @@ wire [31:0] val1_to_EXE;
 wire [31:0] val2_to_reg;
 wire [31:0] val2_to_EXE;
 
-wire [3:0] exe_cmd_to_reg;
-wire [3:0] exe_cmd_to_EXE;
+wire [4:0] exe_cmd_to_reg;
+wire [4:0] exe_cmd_to_EXE;
 
 wire Br_taken_in_to_reg;
 wire Br_taken_to_exe;
@@ -372,8 +372,12 @@ wire [31:0] MEM_R_value_to_WB;
 wire [31:0] write_value_to_ID;
 
 wire IF_flush;
+wire hazard_Detected_wire;
+wire my_clock;
 
 assign IF_flush = Br_taken_to_exe | Br_taken_in_to_reg ;
+
+assign my_clock = CLOCK_50;
 
 IF_Stage if_stage(
 	.rst(SW[0]),
@@ -386,17 +390,19 @@ IF_Stage if_stage(
 
 IF_Stage_Registers if_stage_reg(
 	.rst(SW[0]),
-	.clk(CLOCK_50),
+	.clk(my_clock),
 	.flush(IF_flush),
 	.PC_in(new_pc),
 	.Instruction_in(instruction),
+	.hazard_Detected(hazard_Detected_wire),
+
 	.PC(pc_to_ID_wire),
 	.Instruction(instruction_reg_wire)
 );
 
 Register_File reg_file(
 	.rst(SW[0]),
-	.clk(CLOCK_50),
+	.clk(my_clock),
 	.src1_address(src1_to_register_file),
 	.src2_address(src2_to_register_file),
 	.write_enable(WB_EN_to_ID),
@@ -408,10 +414,14 @@ Register_File reg_file(
 
 ID_Stage id_stage(
 	.rst(SW[0]),
-	.clk(CLOCK_50),
+	.clk(my_clock),
 	.Instruction(instruction_reg_wire),
 	.reg1(reg1_out),
 	.reg2(reg2_out),
+	.Exe_Dest(Dest_to_EXE),
+	.Mem_Dest(Dest_to_MEM),
+	.Exe_WB_en(WB_EN_to_exe),
+	.Mem_WB_en(WB_EN_to_MEM),
 
 	.src1(src1_to_register_file),
 	.src2(src2_to_register_file),
@@ -423,12 +433,13 @@ ID_Stage id_stage(
 	.Br_taken(Br_taken_in_to_reg),
 	.MEM_W_EN(MEM_W_EN_in_te_reg),
 	.MEM_R_EN(MEM_R_EN_in_to_reg),
-	.WB_EN(WB_EN_IN_to_reg)
+	.WB_EN(WB_EN_IN_to_reg),
+	.hazard_Detected(hazard_Detected_wire)
 );
 
 ID_Stage_registers id_stage_registers(
 	.rst(SW[0]),
-	.clk(CLOCK_50),
+	.clk(my_clock),
 	.PC_in(pc_to_ID_wire),
   .Dest_in(Dest_to_reg),
   .Reg2_in(Reg2_to_reg),
@@ -454,7 +465,7 @@ ID_Stage_registers id_stage_registers(
 
 
 EXE_Stage exe_stage(
-	.clk(CLOCK_50),
+	.clk(my_clock),
 	.EXE_CMD(exe_cmd_to_EXE),
 	.val1(val1_to_EXE),
 	.val2(val2_to_EXE),
@@ -463,7 +474,7 @@ EXE_Stage exe_stage(
 
 EXE_Stage_registers exe_stage_registers(
 	.rst(SW[0]),
-	.clk(CLOCK_50),
+	.clk(my_clock),
 	.PC_in(pc_to_EXE_wire),
 	.ALU_result_in(ALU_result_to_reg),
 	.ST_val_in(Reg2_to_EXE),
@@ -484,7 +495,7 @@ EXE_Stage_registers exe_stage_registers(
 
 	MEM_Stage mem_stage(
 		.rst(SW[0]),
-		.clk(CLOCK_50),
+		.clk(my_clock),
 		.MEM_R_EN_in(MEM_R_EN_to_MEM),
 		.MEM_W_EN_in(MEM_W_EN_to_MEM),
 		.address(ALU_result_to_MEM),
@@ -495,7 +506,7 @@ EXE_Stage_registers exe_stage_registers(
 
 	MEM_Stage_registers mem_stage_registers(
 		.rst(SW[0]),
-		.clk(CLOCK_50),
+		.clk(my_clock),
 		.WB_EN_IN(WB_EN_to_MEM),
 		.MEM_R_EN_in(MEM_R_EN_to_MEM),
 
@@ -511,7 +522,7 @@ EXE_Stage_registers exe_stage_registers(
 	);
 
 	WB_Stage wb_stage(
-		.clk(CLOCK_50),
+		.clk(my_clock),
 		.MEM_R_EN(MEM_R_EN_to_WB),
 		.WB_EN_IN(WB_EN_to_WB),
 		.ALU_result(ALU_result_to_WB),
@@ -549,8 +560,5 @@ EXE_Stage_registers exe_stage_registers(
 		.h6(HEX6),
 		.h7(HEX7)
 	);
-
-//To_7segments t7( .data({reg1_out[7:0],reg2_out[7:0],pc_to_EXE_wire[7:0],pc_to_ID_wire[3:0],new_pc[3:0]}),
-// .h0(HEX0), .h1(HEX1), .h2(HEX2), .h3(HEX3), .h4(HEX4), .h5(HEX5), .h6(HEX6), .h7(HEX7));
 
 endmodule

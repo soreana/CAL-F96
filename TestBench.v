@@ -20,21 +20,7 @@ module TestBench ();
 		#100 rst = 1'b1;
 		#100 rst = 1'b0;
 
-		repeat (100) #20 clk = !clk;
-
-		#100 br_taken = 1'b1;
-		repeat (10) #20 clk = !clk;
-		br_taken = 1'b0;
-
-
-		rst = 1'b1;
-		#100 rst = 1'b0;
-		#100 rst = 1'b1;
-		#100 rst = 1'b0;
-		
-		#100 write_enable = 1'b1;
-		repeat (10) #20 clk = !clk;
-		repeat (100) #20 clk = !clk;
+		repeat (500) #20 clk = !clk;
 	end
 
 endmodule
