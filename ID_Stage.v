@@ -18,7 +18,7 @@ module ID_Stage (
 	output [31:0] Reg2,
 	output [31:0] Val1,
 	output [31:0] Val2,
-	output [3:0] EXE_CMD,
+	output [4:0] EXE_CMD,
 
 	// todo
 	output Br_taken,
