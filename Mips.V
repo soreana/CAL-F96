@@ -446,6 +446,7 @@ ID_Stage_registers id_stage_registers(
   .Val1_in(val1_to_reg),
   .Val2_in(val2_to_reg),
 	.EXE_CMD_in(exe_cmd_to_reg),
+	.hazard_Detected(hazard_Detected_wire),
 	.Br_taken_in(Br_taken_in_to_reg),
 	.MEM_R_EN_in(MEM_R_EN_in_to_reg),
 	.MEM_W_EN_in(MEM_W_EN_in_te_reg),

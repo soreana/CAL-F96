@@ -70,6 +70,8 @@ module ID_Stage (
 		.Exe_Dest(Exe_Dest),
 		.Exe_WB_en(Exe_WB_en),
 		.Mem_Dest(Mem_Dest),
+  	.is_br(is_br_local),
+		.br_type(br_type_local),
 		.Mem_WB_en(Mem_WB_en),
   	.is_im(is_imm),
 
@@ -86,6 +88,6 @@ module ID_Stage (
 	assign MEM_R_EN = (hazard_Detected == 1'b1 ) ? 1'b0 : MEM_R_EN_local;
 	assign WB_EN = (hazard_Detected == 1'b1 ) ? 1'b0 : WB_EN_local;
 
-	assign Br_taken = (my_opinion_local | is_jmp_local) ;
+	assign Br_taken = (my_opinion_local | is_jmp_local);
 
 endmodule
