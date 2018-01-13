@@ -14,6 +14,8 @@ module ID_Stage (
 	// to ID stage registres
 	output [4:0] src1,
 	output [4:0] src2,
+	output [4:0] src1_to_reg,
+	output [4:0] src2_to_reg,
 	output [4:0] Dest,
 	output [31:0] Reg2,
 	output [31:0] Val1,
@@ -80,6 +82,9 @@ module ID_Stage (
 
 	assign src1 = Instruction[20:16];
 	assign src2 = (st_or_bne_local == 1'b1) ? Instruction[25:21] : Instruction[15:11];
+	assign src1_to_reg = src1;
+	assign src2_to_reg = (is_imm) ? 5'd0 : src2;
+
 	assign Dest = Instruction[25:21];
 	assign Reg2 = reg2;
 	assign Val1 = reg1 ;

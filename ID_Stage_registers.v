@@ -8,6 +8,8 @@ module ID_Stage_registers
     input [31:0] Reg2_in,
     input [31:0] Val2_in,
     input [31:0] Val1_in,
+		input [4:0] src1_in,
+		input [4:0] src2_in,
 		input [4:0] EXE_CMD_in,
 		input hazard_Detected,
 		input Br_taken_in,
@@ -16,6 +18,8 @@ module ID_Stage_registers
     input WB_EN_IN,
 
     // to Execution stage registers
+		output reg [4:0] src1,
+		output reg [4:0] src2,
 		output reg [4:0] Dest,
 		output reg [31:0] Reg2,
 		output reg [31:0] Val2,
@@ -33,8 +37,10 @@ module ID_Stage_registers
 			{Dest,Reg2,Val2,Val1,PC_out,EXE_CMD,Br_taken,MEM_R_EN,MEM_W_EN,WB_EN} <= 0;
 		end else begin
 			if (hazard_Detected == 1'b1) begin
-				{Dest,Reg2,Val2,Val1,PC_out,EXE_CMD,Br_taken,MEM_R_EN,MEM_W_EN,WB_EN} <= 0;
+				{Dest,Reg2,Val2,Val1,PC_out,EXE_CMD,src1,src2,Br_taken,MEM_R_EN,MEM_W_EN,WB_EN} <= 0;
 			end else begin
+				src1 <= src1_in;
+				src2 <= src2_in;
 				Dest <= Dest_in;
 				Reg2 <= Reg2_in;
 				Val2 <= Val2_in;
