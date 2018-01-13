@@ -323,6 +323,10 @@ wire [31:0] reg2_out;
 
 wire [4:0] src1_to_register_file;
 wire [4:0] src2_to_register_file;
+wire [4:0] src1_to_reg;
+wire [4:0] src2_to_reg;
+wire [4:0] src1_to_exe;
+wire [4:0] src2_to_exe;
 
 // Dest wires
 wire [4:0] Dest_to_reg;
@@ -375,6 +379,11 @@ wire IF_flush;
 wire hazard_Detected_wire;
 wire my_clock;
 
+wire can_forward_local;
+wire [1:0] src1_mux_local;
+wire [1:0] src2_mux_local;
+wire [1:0] st_mux_local;
+
 assign IF_flush = Br_taken_to_exe | Br_taken_in_to_reg ;
 
 assign my_clock = CLOCK_50;
@@ -425,6 +434,8 @@ ID_Stage id_stage(
 
 	.src1(src1_to_register_file),
 	.src2(src2_to_register_file),
+	.src1_to_reg(src1_to_reg),
+	.src2_to_reg(src2_to_reg),
 	.Dest(Dest_to_reg),
 	.Reg2(Reg2_to_reg),
 	.Val1(val1_to_reg),
@@ -445,6 +456,8 @@ ID_Stage_registers id_stage_registers(
   .Reg2_in(Reg2_to_reg),
   .Val1_in(val1_to_reg),
   .Val2_in(val2_to_reg),
+	.src1_in(src1_to_reg),
+	.src2_in(src2_to_reg),
 	.EXE_CMD_in(exe_cmd_to_reg),
 	.hazard_Detected(hazard_Detected_wire),
 	.Br_taken_in(Br_taken_in_to_reg),
@@ -452,6 +465,8 @@ ID_Stage_registers id_stage_registers(
 	.MEM_W_EN_in(MEM_W_EN_in_te_reg),
   .WB_EN_IN(WB_EN_IN_to_reg),
 
+	.src1(src1_to_exe),
+	.src2(src2_to_exe),
 	.PC_out(pc_to_EXE_wire),
   .Dest(Dest_to_EXE),
   .Reg2(Reg2_to_EXE),
@@ -468,9 +483,35 @@ ID_Stage_registers id_stage_registers(
 EXE_Stage exe_stage(
 	.clk(my_clock),
 	.EXE_CMD(exe_cmd_to_EXE),
-	.val1(val1_to_EXE),
-	.val2(val2_to_EXE),
+	.val10(val1_to_EXE),
+	.val20(val2_to_EXE),
+  .ALU_result_to_mem(ALU_result_to_MEM),
+  .write_value_to_ID(write_value_to_ID),
+
+
+  .src1_mux(src1_mux_local),
+  .src2_mux(src2_mux_local),
+
 	.ALU_result(ALU_result_to_reg)
+);
+
+Forwarding_unit forwarding_unit(
+  .WB_EN(WB_EN_to_ID),
+  .Des_to_ID(Des_to_ID),
+
+  .Mem_Dest(Dest_to_MEM),
+  .MEM_WB_EN(WB_EN_to_MEM),
+
+  .src1(src1_to_exe),
+  .src2(src2_to_exe),
+  .Dest_to_EXE(Dest_to_EXE),
+
+  .MEM_w_EN(MEM_W_EN_to_MEM),
+
+  .src1_mux(src1_mux_local),
+  .src2_mux(src2_mux_local),
+  .st_mux(st_mux_local),
+  .can_forward(can_forward_local)
 );
 
 EXE_Stage_registers exe_stage_registers(

@@ -16,7 +16,7 @@ module Hazard_Unit (
 
   assign src1_hazard = (src1 == 5'd0)? 1'd0:
                        (Exe_WB_en == 1'b1 && src1 == Exe_Dest) ? 1'b1 :
-                       (Mem_WB_en == 1'b1 && src1 == Mem_Dest) ? 1'b1 :
+                       //(Mem_WB_en == 1'b1 && src1 == Mem_Dest) ? 1'b1 :
                        (is_br == 1'b1 && src1 == Mem_Dest)? 1'b1:
                        (is_br == 1'b1 && src1 == Exe_Dest)? 1'b1:
                        1'b0;
@@ -26,7 +26,7 @@ module Hazard_Unit (
                        (is_br == 1'b1 && br_type == 1'b0 && src2 == Exe_Dest)? 1'b1:
                        (is_im == 1'b1) ? 1'b0:
                        (Exe_WB_en == 1'b1 && src2 == Exe_Dest) ? 1'b1 :
-                       (Mem_WB_en == 1'b1 && src2 == Mem_Dest) ? 1'b1 :
+                       //(Mem_WB_en == 1'b1 && src2 == Mem_Dest) ? 1'b1 :
                        1'b0;
 
   assign hazard_Detected = src1_hazard | src2_hazard;
