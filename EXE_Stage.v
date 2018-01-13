@@ -23,10 +23,9 @@ module EXE_Stage (
                 2'd0;
 
   assign val2 = (src2_mux == 2'd0 ) ? val20 :
-                (src2_mux == 2'd1 ) ? ALU_result:
+                (src2_mux == 2'd1 ) ? ALU_result_to_mem:
                 (src2_mux == 2'd2 ) ? write_value_to_ID:
                 2'd0;
-
 
   assign ALU_result = (EXE_CMD ==  5'd0) ? val1 + val2 :
                       (EXE_CMD ==  5'd1) ? val1 - val2:

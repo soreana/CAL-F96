@@ -10,6 +10,7 @@ module ID_Stage (
 	input [4:0] Mem_Dest,
 	input Exe_WB_en,
 	input Mem_WB_en,
+	input Exe_mem_r_en,
 
 	// to ID stage registres
 	output [4:0] src1,
@@ -72,6 +73,7 @@ module ID_Stage (
 		.Exe_Dest(Exe_Dest),
 		.Exe_WB_en(Exe_WB_en),
 		.Mem_Dest(Mem_Dest),
+		.MEM_R_EN(Exe_mem_r_en),
   	.is_br(is_br_local),
 		.br_type(br_type_local),
 		.Mem_WB_en(Mem_WB_en),

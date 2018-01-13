@@ -428,6 +428,7 @@ ID_Stage id_stage(
 	.reg1(reg1_out),
 	.reg2(reg2_out),
 	.Exe_Dest(Dest_to_EXE),
+	.Exe_mem_r_en(MEM_R_EN_to_exe),
 	.Mem_Dest(Dest_to_MEM),
 	.Exe_WB_en(WB_EN_to_exe),
 	.Mem_WB_en(WB_EN_to_MEM),
